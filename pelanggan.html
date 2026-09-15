@@ -7,145 +7,146 @@
 
 <style>
 *{box-sizing:border-box}
+
 body{
   margin:0;
   font-family:Arial,sans-serif;
   background:#fff8f0;
-  color:#222
+  color:#222;
 }
+
 header{
   background:#d84315;
   color:white;
   text-align:center;
-  padding:25px 15px
+  padding:25px 15px;
 }
-header h1{margin:0;font-size:30px}
-header p{margin:8px 0 0;font-weight:bold}
+
+header h1{
+  margin:0;
+  font-size:30px;
+}
+
+header p{
+  margin:8px 0 0;
+  font-size:20px;
+  font-weight:bold;
+}
 
 .container{
   max-width:700px;
   margin:auto;
-  padding:18px
+  padding:18px;
 }
 
 .hero{
   background:white;
-  padding:18px;
-  border-radius:16px;
-  margin-bottom:18px;
+  padding:25px 18px;
+  border-radius:20px;
+  margin-bottom:20px;
   text-align:center;
-  box-shadow:0 3px 12px #0001
+  box-shadow:0 3px 12px #ddd;
 }
 
-.hero h2{margin:0 0 5px}
-.hero p{margin:5px;color:#666}
+.hero h2{
+  margin:0 0 5px;
+  font-size:32px;
+}
 
-h2{margin-top:25px}
+.hero p{
+  margin:5px;
+  color:#666;
+  font-size:20px;
+}
+
+h2.menu-title{
+  margin-top:25px;
+}
 
 .product{
   background:white;
   padding:15px;
   margin:10px 0;
-  border-radius:14px;
-  box-shadow:0 3px 10px #0001;
+  border-radius:16px;
+  box-shadow:0 3px 10px #ddd;
   display:flex;
   justify-content:space-between;
   align-items:center;
-  gap:10px
+  gap:10px;
 }
 
 .product-info{
-  flex:1
+  flex:1;
 }
 
 .product-name{
   font-weight:bold;
-  font-size:17px
+  font-size:18px;
 }
 
 .price{
   color:#d84315;
   font-weight:bold;
-  margin-top:5px
+  margin-top:5px;
+  font-size:18px;
 }
 
 .controls{
   display:flex;
   align-items:center;
-  gap:8px
+  gap:10px;
 }
 
-button{
+.controls button{
+  width:68px;
+  height:68px;
   border:0;
-  border-radius:10px;
-  padding:10px 14px;
-  font-weight:bold;
-  cursor:pointer
-}
-
-.minus,.plus{
+  border-radius:16px;
   background:#d84315;
   color:white;
-  font-size:18px
+  font-size:28px;
+  font-weight:bold;
 }
 
 .qty{
   min-width:25px;
   text-align:center;
-  font-weight:bold
+  font-size:18px;
+  font-weight:bold;
 }
-
-.form{
-  background:white;
-  padding:18px;
-  border-radius:15px;
-  box-shadow:0 3px 10px #0001;
-  margin-top:20px
-}
-
-input,textarea{
-  width:100%;
-  padding:13px;
-  margin:7px 0 12px;
-  border:1px solid #ddd;
-  border-radius:10px;
-  font-size:15px
-}
-
-textarea{resize:vertical}
 
 .cart{
+  position:sticky;
+  bottom:15px;
   background:#222;
   color:white;
-  padding:18px;
-  border-radius:16px;
+  padding:20px;
+  border-radius:25px;
   margin-top:20px;
-  position:sticky;
-  bottom:10px
+  box-shadow:0 5px 20px #999;
 }
 
-.total{
-  font-size:23px;
+.cart-total{
+  font-size:28px;
   font-weight:bold;
-  margin-bottom:12px
+  margin:5px 0 15px;
 }
 
-.checkout{
+.wa{
   width:100%;
-  background:#25D366;
+  padding:17px;
+  border:0;
+  border-radius:14px;
+  background:#25d366;
   color:white;
-  font-size:17px
+  font-size:20px;
+  font-weight:bold;
 }
 
-.empty{
-  color:#aaa;
-  text-align:center
-}
-
-.footer{
+.status{
   text-align:center;
-  padding:25px;
-  color:#777
+  padding:15px;
+  color:#666;
 }
 </style>
 </head>
@@ -159,190 +160,277 @@ textarea{resize:vertical}
 
 <div class="container">
 
-<div class="hero">
-  <h2>🛒 Pesan Sekarang</h2>
-  <p>Pilih menu favorit kamu dan pesan langsung melalui WhatsApp.</p>
-</div>
+  <div class="hero">
+    <h2>🛒 Pesan Sekarang</h2>
+    <p>Pilih menu favorit kamu dan pesan langsung melalui WhatsApp.</p>
+  </div>
 
-<h2>🍴 Menu</h2>
+  <h2 class="menu-title">🍴 Menu</h2>
 
-<div id="products"></div>
+  <div id="menu">
+    <div class="status">Memuat menu...</div>
+  </div>
 
-<div class="form">
-  <h2>📋 Data Pemesan</h2>
+  <div class="cart">
+    <div id="jumlah">0 item</div>
+    <div class="cart-total" id="total">Rp0</div>
+    <button class="wa" onclick="pesanWhatsApp()">
+      📱 PESAN VIA WHATSAPP
+    </button>
+  </div>
 
-  <label>Nama</label>
-  <input id="nama" type="text" placeholder="Masukkan nama kamu">
-
-  <label>Alamat / Lokasi</label>
-  <textarea id="alamat" rows="3" placeholder="Masukkan alamat atau lokasi pengantaran"></textarea>
-
-  <label>Catatan Pesanan</label>
-  <textarea id="catatan" rows="3" placeholder="Contoh: pedas, tidak pakai bawang, dll"></textarea>
-</div>
-
-<div class="cart">
-  <div id="jumlah">0 item</div>
-  <div class="total" id="total">Rp0</div>
-  <button class="checkout" onclick="checkout()">
-    📱 PESAN VIA WHATSAPP
-  </button>
-</div>
-
-</div>
-
-<div class="footer">
-  © Kedai Shahia
 </div>
 
 <script>
 
-const WA = "6289513623864";
+/* =========================
+   SUPABASE
+   ========================= */
 
-const products = [
-  ["AYAM KOCAK PEDAS",12000],
-  ["AYAM KOCAK PEDAS KEJU",14000],
-  ["AYAM KOCAK KEJU",15000],
-  ["KEBAB BEEF PETTIES",13000],
-  ["KEBAB CHICKEN",12000],
-  ["KEBAB PISANG COKLAT",8000],
-  ["KEBAB PISANG COKLAT KEJU",10000],
-  ["ROTI BAKAR",5000],
-  ["PISANG BAKAR",5000]
-];
+const SUPABASE_URL = "https://bkcshfgzerlripxxpfuz.supabase.co/";
+const SUPABASE_KEY = "sb_publishable_Nnc8yoURO-nJ32EcHWtDfA_zLmlMnnl";
 
-let cart = {};
+const WA_NUMBER = "6289513623864";
 
-function rupiah(n){
-  return "Rp" + n.toLocaleString("id-ID");
+let produk = [];
+let keranjang = {};
+
+
+/* =========================
+   FORMAT RUPIAH
+   ========================= */
+
+function rupiah(angka){
+  return "Rp" + Number(angka).toLocaleString("id-ID");
 }
 
-function render(){
 
-  const box = document.getElementById("products");
-  box.innerHTML = "";
+/* =========================
+   AMBIL MENU DARI SUPABASE
+   ========================= */
 
-  products.forEach((p,i)=>{
+async function loadMenu(){
 
-    const qty = cart[i] || 0;
+  const menuBox = document.getElementById("menu");
 
-    box.innerHTML += `
+  try{
+
+    const response = await fetch(
+      SUPABASE_URL +
+      "/rest/v1/menu?select=id,nama,harga,aktif&aktif=eq.true&order=id.asc",
+      {
+        headers:{
+          "apikey":SUPABASE_KEY,
+          "Authorization":"Bearer " + SUPABASE_KEY
+        }
+      }
+    );
+
+    if(!response.ok){
+      throw new Error(await response.text());
+    }
+
+    produk = await response.json();
+
+    if(produk.length === 0){
+      menuBox.innerHTML =
+        '<div class="status">Belum ada menu tersedia.</div>';
+      return;
+    }
+
+    tampilkanMenu();
+
+  }catch(error){
+
+    console.error(error);
+
+    menuBox.innerHTML =
+      '<div class="status">❌ Gagal memuat menu.</div>';
+  }
+}
+
+
+/* =========================
+   TAMPILKAN MENU
+   ========================= */
+
+function tampilkanMenu(){
+
+  const menuBox = document.getElementById("menu");
+
+  menuBox.innerHTML = produk.map(item => {
+
+    const qty = keranjang[item.id] || 0;
+
+    return `
       <div class="product">
 
         <div class="product-info">
-          <div class="product-name">${p[0]}</div>
-          <div class="price">${rupiah(p[1])}</div>
+          <div class="product-name">
+            ${escapeHtml(item.nama)}
+          </div>
+
+          <div class="price">
+            ${rupiah(item.harga)}
+          </div>
         </div>
 
         <div class="controls">
-          <button class="minus" onclick="ubah(${i},-1)">−</button>
-          <div class="qty">${qty}</div>
-          <button class="plus" onclick="ubah(${i},1)">+</button>
+
+          <button onclick="kurang(${item.id})">−</button>
+
+          <div class="qty" id="qty-${item.id}">
+            ${qty}
+          </div>
+
+          <button onclick="tambah(${item.id})">+</button>
+
         </div>
 
       </div>
     `;
+
+  }).join("");
+
+  hitungTotal();
+}
+
+
+/* =========================
+   TAMBAH
+   ========================= */
+
+function tambah(id){
+
+  keranjang[id] = (keranjang[id] || 0) + 1;
+
+  tampilkanMenu();
+}
+
+
+/* =========================
+   KURANG
+   ========================= */
+
+function kurang(id){
+
+  if(!keranjang[id]) return;
+
+  keranjang[id]--;
+
+  if(keranjang[id] <= 0){
+    delete keranjang[id];
+  }
+
+  tampilkanMenu();
+}
+
+
+/* =========================
+   HITUNG TOTAL
+   ========================= */
+
+function hitungTotal(){
+
+  let total = 0;
+  let jumlah = 0;
+
+  produk.forEach(item => {
+
+    const qty = keranjang[item.id] || 0;
+
+    jumlah += qty;
+    total += Number(item.harga) * qty;
+
   });
 
-  update();
-}
-
-function ubah(i,d){
-
-  cart[i] = Math.max(0,(cart[i] || 0) + d);
-
-  if(cart[i] === 0){
-    delete cart[i];
-  }
-
-  render();
-}
-
-function update(){
-
-  let jumlah = 0;
-  let total = 0;
-
-  for(const i in cart){
-
-    jumlah += cart[i];
-    total += products[i][1] * cart[i];
-
-  }
-
-  document.getElementById("jumlah").textContent =
+  document.getElementById("jumlah").innerText =
     jumlah + " item";
 
-  document.getElementById("total").textContent =
+  document.getElementById("total").innerText =
     rupiah(total);
 }
 
-function checkout(){
 
-  if(Object.keys(cart).length === 0){
+/* =========================
+   PESAN WHATSAPP
+   ========================= */
+
+function pesanWhatsApp(){
+
+  let pesan = "Halo Kedai Shahia 👋%0A";
+  pesan += "Saya ingin pesan:%0A%0A";
+
+  let total = 0;
+  let jumlah = 0;
+  let adaPesanan = false;
+
+  produk.forEach(item => {
+
+    const qty = keranjang[item.id] || 0;
+
+    if(qty > 0){
+
+      adaPesanan = true;
+
+      const subtotal =
+        Number(item.harga) * qty;
+
+      jumlah += qty;
+      total += subtotal;
+
+      pesan +=
+        "• " +
+        item.nama +
+        " x" +
+        qty +
+        " = " +
+        rupiah(subtotal) +
+        "%0A";
+    }
+
+  });
+
+  if(!adaPesanan){
+
     alert("Silakan pilih menu terlebih dahulu.");
     return;
   }
 
-  const nama = document.getElementById("nama").value.trim();
-  const alamat = document.getElementById("alamat").value.trim();
-  const catatan = document.getElementById("catatan").value.trim();
-
-  if(!nama){
-    alert("Silakan isi nama terlebih dahulu.");
-    return;
-  }
-
-  if(!alamat){
-    alert("Silakan isi alamat atau lokasi.");
-    return;
-  }
-
-  let pesan = "🍔 *PESANAN KEDAI SHAHIA*%0A";
-  pesan += "====================%0A";
-  pesan += "👤 Nama: " + encodeURIComponent(nama) + "%0A";
-  pesan += "📍 Alamat: " + encodeURIComponent(alamat) + "%0A%0A";
-
-  pesan += "🛒 *Pesanan:*%0A";
-
-  let total = 0;
-
-  for(const i in cart){
-
-    const qty = cart[i];
-    const namaProduk = products[i][0];
-    const harga = products[i][1];
-    const subtotal = harga * qty;
-
-    total += subtotal;
-
-    pesan +=
-      "• " +
-      encodeURIComponent(namaProduk) +
-      " x" + qty +
-      " = " +
-      encodeURIComponent(rupiah(subtotal)) +
-      "%0A";
-  }
-
-  pesan += "%0A💰 *TOTAL: " + encodeURIComponent(rupiah(total)) + "*%0A";
-
-  if(catatan){
-    pesan +=
-      "📝 Catatan: " +
-      encodeURIComponent(catatan) +
-      "%0A";
-  }
-
-  pesan += "%0A🙏 Terima kasih.";
+  pesan += "%0A";
+  pesan += "Total: " + rupiah(total);
+  pesan += "%0A%0ATerima kasih 🙏";
 
   window.open(
-    "https://wa.me/" + WA + "?text=" + pesan,
+    "https://wa.me/" +
+    WA_NUMBER +
+    "?text=" +
+    pesan,
     "_blank"
   );
 }
 
-render();
+
+/* =========================
+   KEAMANAN TEKS MENU
+   ========================= */
+
+function escapeHtml(text){
+
+  return String(text)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+
+
+/* =========================
+   JALANKAN
+   ========================= */
+
+loadMenu();
 
 </script>
 
