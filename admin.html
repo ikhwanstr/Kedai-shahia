@@ -1,0 +1,12 @@
+<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Kedai Shahia - Admin</title>
+<style>*{box-sizing:border-box}body{margin:0;font-family:Arial;background:#f5f5f5;color:#2b1b12}.wrap{max-width:900px;margin:auto;padding:20px}.box{background:#fff;padding:22px;border-radius:18px;margin-bottom:18px;box-shadow:0 5px 18px #0001}input{width:100%;padding:11px;margin:6px 0 12px;border:1px solid #ddd;border-radius:9px}.btn{border:0;border-radius:10px;padding:11px 16px;font-weight:bold;cursor:pointer;margin:3px}.save{background:#1faa59;color:#fff}.del{background:#d84315;color:#fff}.row{display:grid;grid-template-columns:1fr 130px 80px;gap:8px;align-items:center;margin-bottom:8px}@media(max-width:600px){.row{grid-template-columns:1fr 100px 65px}}</style></head><body>
+<div class="wrap"><div class="box"><h1>🔐 Admin Kedai Shahia</h1><p>Kelola nama menu dan harga. Data tersimpan di browser perangkat admin.</p>
+<div id="list"></div><button class="btn" onclick="add()">＋ Tambah Menu</button> <button class="btn save" onclick="save()">Simpan Perubahan</button></div>
+<div class="box"><h2>📱 Nomor WhatsApp</h2><p>Nomor tujuan pesanan pelanggan:</p><b>089513623864</b></div></div>
+<script>
+const defaults=[["AYAM KOCAK PEDAS",12000],["AYAM KOCAK PEDAS KEJU",14000],["AYAM KOCAK KEJU",15000],["KEBAB BEEF PETTIES",13000],["KEBAB CHICKEN",12000],["KEBAB PISANG COKLAT",8000],["KEBAB PISANG COKLAT KEJU",10000],["ROTI BAKAR",5000],["PISANG BAKAR",5000]];
+let p=JSON.parse(localStorage.getItem("shahia_products")||"null")||defaults;
+function draw(){document.getElementById("list").innerHTML=p.map((x,i)=>`<div class="row"><input id="n${i}" value="${x[0]}"><input id="v${i}" type="number" value="${x[1]}"><button class="btn del" onclick="remove(${i})">Hapus</button></div>`).join("")}
+function save(){p=p.map((x,i)=>[document.getElementById("n"+i).value,Number(document.getElementById("v"+i).value)]);localStorage.setItem("shahia_products",JSON.stringify(p));alert("Menu berhasil disimpan.");draw()}
+function add(){p.push(["MENU BARU",5000]);draw()}function remove(i){p.splice(i,1);draw()}draw();
+</script></body></html>
