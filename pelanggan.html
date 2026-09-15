@@ -289,11 +289,12 @@ async function ambilMenu(){
 
     console.error(error);
 
-    menuEl.innerHTML =
-  '<div class="error">' +
-  '❌ Error Supabase:<br>' +
-  error.message +
-  '</div>';
+      menuEl.innerHTML =
+    '<div class="error">' +
+    '❌ Error Supabase:<br>' +
+    error.message +
+    '</div>';
+  }
 }
 
 
