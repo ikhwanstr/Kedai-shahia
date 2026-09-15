@@ -271,7 +271,8 @@ async function ambilMenu(){
     );
 
     if(!response.ok){
-      throw new Error("Gagal mengambil menu");
+  const detail = await response.text();
+  throw new Error(response.status + " - " + detail);
     }
 
     produk = await response.json();
@@ -289,11 +290,10 @@ async function ambilMenu(){
     console.error(error);
 
     menuEl.innerHTML =
-      '<div class="error">' +
-      '❌ Menu belum dapat dimuat.<br>' +
-      'Silakan coba refresh halaman.' +
-      '</div>';
-  }
+  '<div class="error">' +
+  '❌ Error Supabase:<br>' +
+  error.message +
+  '</div>';
 }
 
 
