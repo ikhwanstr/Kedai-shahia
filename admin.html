@@ -1,12 +1,206 @@
-<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Kedai Shahia - Admin</title>
-<style>*{box-sizing:border-box}body{margin:0;font-family:Arial;background:#f5f5f5;color:#2b1b12}.wrap{max-width:900px;margin:auto;padding:20px}.box{background:#fff;padding:22px;border-radius:18px;margin-bottom:18px;box-shadow:0 5px 18px #0001}input{width:100%;padding:11px;margin:6px 0 12px;border:1px solid #ddd;border-radius:9px}.btn{border:0;border-radius:10px;padding:11px 16px;font-weight:bold;cursor:pointer;margin:3px}.save{background:#1faa59;color:#fff}.del{background:#d84315;color:#fff}.row{display:grid;grid-template-columns:1fr 130px 80px;gap:8px;align-items:center;margin-bottom:8px}@media(max-width:600px){.row{grid-template-columns:1fr 100px 65px}}</style></head><body>
-<div class="wrap"><div class="box"><h1>🔐 Admin Kedai Shahia</h1><p>Kelola nama menu dan harga. Data tersimpan di browser perangkat admin.</p>
-<div id="list"></div><button class="btn" onclick="add()">＋ Tambah Menu</button> <button class="btn save" onclick="save()">Simpan Perubahan</button></div>
-<div class="box"><h2>📱 Nomor WhatsApp</h2><p>Nomor tujuan pesanan pelanggan:</p><b>089513623864</b></div></div>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin Kedai Shahia</title>
+<style>
+body{font-family:Arial;margin:0;background:#f4f4f5;color:#18181b}
+header{background:#111827;color:white;padding:20px}
+main{max-width:800px;margin:auto;padding:15px}
+.box{background:white;padding:16px;border-radius:15px;margin:15px 0}
+input{width:100%;padding:12px;margin:7px 0 12px;border:1px solid #ccc;border-radius:9px;box-sizing:border-box}
+button{padding:11px 15px;border:0;border-radius:9px;font-weight:bold;margin:4px;cursor:pointer}
+.ok{background:#16a34a;color:white}.hapus{background:#dc2626;color:white}
+.item{border:1px solid #ddd;padding:12px;border-radius:10px;margin:10px 0}
+</style>
+</head>
+
+<body>
+<header>
+<h2>🔐 Admin Kedai Shahia</h2>
+<p>Kelola menu Kedai Shahia</p>
+</header>
+
+<main>
+
+<div class="box">
+<h3>🔗 Koneksi Supabase</h3>
+
+<label>Project URL</label>
+<input id="url" placeholder="https://xxxxx.supabase.co">
+
+<label>Publishable Key</label>
+<input id="key" placeholder="sb_publishable_...">
+
+<button class="ok" onclick="simpan()">Simpan Koneksi</button>
+<button onclick="tes()">Tes Koneksi</button>
+
+<p id="status">Belum terhubung.</p>
+</div>
+
+<div class="box">
+<h3>➕ Tambah Menu</h3>
+
+<input id="nama" placeholder="Nama menu">
+<input id="harga" type="number" placeholder="Harga">
+
+<button class="ok" onclick="tambah()">Tambah Menu</button>
+</div>
+
+<div class="box">
+<h3>📋 Daftar Menu</h3>
+<div id="daftar">Memuat...</div>
+</div>
+
+</main>
+
 <script>
-const defaults=[["AYAM KOCAK PEDAS",12000],["AYAM KOCAK PEDAS KEJU",14000],["AYAM KOCAK KEJU",15000],["KEBAB BEEF PETTIES",13000],["KEBAB CHICKEN",12000],["KEBAB PISANG COKLAT",8000],["KEBAB PISANG COKLAT KEJU",10000],["ROTI BAKAR",5000],["PISANG BAKAR",5000]];
-let p=JSON.parse(localStorage.getItem("shahia_products")||"null")||defaults;
-function draw(){document.getElementById("list").innerHTML=p.map((x,i)=>`<div class="row"><input id="n${i}" value="${x[0]}"><input id="v${i}" type="number" value="${x[1]}"><button class="btn del" onclick="remove(${i})">Hapus</button></div>`).join("")}
-function save(){p=p.map((x,i)=>[document.getElementById("n"+i).value,Number(document.getElementById("v"+i).value)]);localStorage.setItem("shahia_products",JSON.stringify(p));alert("Menu berhasil disimpan.");draw()}
-function add(){p.push(["MENU BARU",5000]);draw()}function remove(i){p.splice(i,1);draw()}draw();
-</script></body></html>
+let url=localStorage.getItem("shahia_url")||"";
+let key=localStorage.getItem("shahia_key")||"";
+
+document.getElementById("url").value=url;
+document.getElementById("key").value=key;
+
+function simpan(){
+ url=document.getElementById("url").value.trim().replace(/\/$/,"");
+ key=document.getElementById("key").value.trim();
+
+ if(!url||!key){
+  alert("URL dan Publishable Key wajib diisi");
+  return;
+ }
+
+ localStorage.setItem("shahia_url",url);
+ localStorage.setItem("shahia_key",key);
+
+ document.getElementById("status").innerText="✅ Koneksi disimpan";
+ muat();
+}
+
+async function api(path,opt={}){
+ let r=await fetch(url+"/rest/v1/"+path,{
+  ...opt,
+  headers:{
+   "apikey":key,
+   "Authorization":"Bearer "+key,
+   "Content-Type":"application/json",
+   "Prefer":"return=representation"
+  }
+ });
+
+ let t=await r.text();
+
+ if(!r.ok)throw new Error(t);
+
+ return t?JSON.parse(t):[];
+}
+
+async function tes(){
+ try{
+  await api("menu?select=id&limit=1");
+  document.getElementById("status").innerText="✅ Supabase TERHUBUNG";
+  muat();
+ }catch(e){
+  document.getElementById("status").innerText="❌ Gagal terhubung";
+  alert(e.message);
+ }
+}
+
+async function muat(){
+ try{
+  let data=await api("menu?select=*&order=urutan.asc,nama.asc");
+
+  if(!data.length){
+   daftar.innerHTML="Belum ada menu";
+   return;
+  }
+
+  daftar.innerHTML=data.map(x=>`
+   <div class="item">
+    <b>${x.nama}</b>
+    <br>Rp ${Number(x.harga).toLocaleString("id-ID")}
+    <br>
+    <button onclick="edit(${x.id},'${String(x.nama).replace(/'/g,"\\'")}',${x.harga})">✏️ Edit</button>
+    <button class="hapus" onclick="hapus(${x.id})">🗑️ Hapus</button>
+   </div>
+  `).join("");
+
+ }catch(e){
+  daftar.innerHTML="❌ Belum tersambung ke Supabase";
+ }
+}
+
+async function tambah(){
+ let nama=document.getElementById("nama").value.trim();
+ let harga=Number(document.getElementById("harga").value);
+
+ if(!nama||!harga){
+  alert("Nama dan harga wajib diisi");
+  return;
+ }
+
+ try{
+  let data=await api("menu?select=urutan&order=urutan.desc&limit=1");
+  let urutan=data.length?(data[0].urutan+1):1;
+
+  await api("menu",{
+   method:"POST",
+   body:JSON.stringify({
+    nama:nama,
+    harga:harga,
+    urutan:urutan,
+    aktif:true
+   })
+  });
+
+  document.getElementById("nama").value="";
+  document.getElementById("harga").value="";
+
+  muat();
+  alert("✅ Menu berhasil ditambahkan");
+
+ }catch(e){
+  alert("❌ Gagal: "+e.message);
+ }
+}
+
+async function edit(id,nama,harga){
+ let n=prompt("Nama menu:",nama);
+ if(n===null)return;
+
+ let h=prompt("Harga:",harga);
+ if(h===null)return;
+
+ try{
+  await api("menu?id=eq."+id,{
+   method:"PATCH",
+   body:JSON.stringify({
+    nama:n.trim(),
+    harga:Number(h)
+   })
+  });
+
+  muat();
+ }catch(e){
+  alert("❌ Gagal: "+e.message);
+ }
+}
+
+async function hapus(id){
+ if(!confirm("Hapus menu ini?"))return;
+
+ try{
+  await api("menu?id=eq."+id,{method:"DELETE"});
+  muat();
+ }catch(e){
+  alert("❌ Gagal: "+e.message);
+ }
+}
+
+if(url&&key)muat();
+else daftar.innerHTML="Isi koneksi Supabase terlebih dahulu";
+</script>
+
+</body>
+</html>
