@@ -1,17 +1,350 @@
-<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Kedai Shahia - Pelanggan</title>
-<style>*{box-sizing:border-box}body{margin:0;font-family:Arial;background:#fff8ef;color:#2b1b12}header{background:#d84315;color:#fff;text-align:center;padding:25px 15px}header h1{margin:0;font-size:30px}header p{font-weight:bold}.wrap{max-width:1000px;margin:auto;padding:20px}.hero{background:linear-gradient(135deg,#ff7043,#ffb300);color:#fff;border-radius:20px;padding:25px;margin-bottom:20px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:15px}.card{background:#fff;border-radius:17px;padding:18px;box-shadow:0 5px 18px #0001}.price{font-size:20px;font-weight:bold;color:#d84315}.qty{display:flex;gap:10px;align-items:center;margin-top:12px}.qty button{border:0;border-radius:9px;width:36px;height:36px;font-size:20px;background:#ffe0b2}.cart{position:fixed;right:15px;bottom:15px;background:#1faa59;color:#fff;padding:15px 18px;border-radius:15px;font-weight:bold;cursor:pointer}.btn{border:0;border-radius:11px;padding:12px 18px;font-weight:bold;cursor:pointer}textarea,input{width:100%;padding:12px;border:1px solid #ddd;border-radius:10px;margin:6px 0 12px}</style></head><body>
-<header><h1>🍔 KEDAI SHAHIA</h1><p>JAJANAN RAMAH DIKANTONG</p></header><div class="wrap">
-<div class="hero"><h2>Pesan Sekarang 😋</h2><p>Pilih menu favoritmu dan kirim pesanan langsung melalui WhatsApp.</p></div>
-<h2>Menu</h2><div id="products" class="grid"></div>
-<h2>Catatan</h2><textarea id="note" rows="3" placeholder="Contoh: level pedas, alamat, catatan lainnya"></textarea>
-</div><div class="cart" onclick="checkout()">🛒 <span id="count">0</span> • <span id="total">Rp0</span></div>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kedai Shahia</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#fff8f0;
+  color:#222
+}
+header{
+  background:#d84315;
+  color:white;
+  text-align:center;
+  padding:25px 15px
+}
+header h1{margin:0;font-size:30px}
+header p{margin:8px 0 0;font-weight:bold}
+
+.container{
+  max-width:700px;
+  margin:auto;
+  padding:18px
+}
+
+.hero{
+  background:white;
+  padding:18px;
+  border-radius:16px;
+  margin-bottom:18px;
+  text-align:center;
+  box-shadow:0 3px 12px #0001
+}
+
+.hero h2{margin:0 0 5px}
+.hero p{margin:5px;color:#666}
+
+h2{margin-top:25px}
+
+.product{
+  background:white;
+  padding:15px;
+  margin:10px 0;
+  border-radius:14px;
+  box-shadow:0 3px 10px #0001;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px
+}
+
+.product-info{
+  flex:1
+}
+
+.product-name{
+  font-weight:bold;
+  font-size:17px
+}
+
+.price{
+  color:#d84315;
+  font-weight:bold;
+  margin-top:5px
+}
+
+.controls{
+  display:flex;
+  align-items:center;
+  gap:8px
+}
+
+button{
+  border:0;
+  border-radius:10px;
+  padding:10px 14px;
+  font-weight:bold;
+  cursor:pointer
+}
+
+.minus,.plus{
+  background:#d84315;
+  color:white;
+  font-size:18px
+}
+
+.qty{
+  min-width:25px;
+  text-align:center;
+  font-weight:bold
+}
+
+.form{
+  background:white;
+  padding:18px;
+  border-radius:15px;
+  box-shadow:0 3px 10px #0001;
+  margin-top:20px
+}
+
+input,textarea{
+  width:100%;
+  padding:13px;
+  margin:7px 0 12px;
+  border:1px solid #ddd;
+  border-radius:10px;
+  font-size:15px
+}
+
+textarea{resize:vertical}
+
+.cart{
+  background:#222;
+  color:white;
+  padding:18px;
+  border-radius:16px;
+  margin-top:20px;
+  position:sticky;
+  bottom:10px
+}
+
+.total{
+  font-size:23px;
+  font-weight:bold;
+  margin-bottom:12px
+}
+
+.checkout{
+  width:100%;
+  background:#25D366;
+  color:white;
+  font-size:17px
+}
+
+.empty{
+  color:#aaa;
+  text-align:center
+}
+
+.footer{
+  text-align:center;
+  padding:25px;
+  color:#777
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>🍔 KEDAI SHAHIA</h1>
+  <p>JAJANAN RAMAH DIKANTONG</p>
+</header>
+
+<div class="container">
+
+<div class="hero">
+  <h2>🛒 Pesan Sekarang</h2>
+  <p>Pilih menu favorit kamu dan pesan langsung melalui WhatsApp.</p>
+</div>
+
+<h2>🍴 Menu</h2>
+
+<div id="products"></div>
+
+<div class="form">
+  <h2>📋 Data Pemesan</h2>
+
+  <label>Nama</label>
+  <input id="nama" type="text" placeholder="Masukkan nama kamu">
+
+  <label>Alamat / Lokasi</label>
+  <textarea id="alamat" rows="3" placeholder="Masukkan alamat atau lokasi pengantaran"></textarea>
+
+  <label>Catatan Pesanan</label>
+  <textarea id="catatan" rows="3" placeholder="Contoh: pedas, tidak pakai bawang, dll"></textarea>
+</div>
+
+<div class="cart">
+  <div id="jumlah">0 item</div>
+  <div class="total" id="total">Rp0</div>
+  <button class="checkout" onclick="checkout()">
+    📱 PESAN VIA WHATSAPP
+  </button>
+</div>
+
+</div>
+
+<div class="footer">
+  © Kedai Shahia
+</div>
+
 <script>
-const WA="6289513623864";
-const products=[["AYAM KOCAK PEDAS",12000],["AYAM KOCAK PEDAS KEJU",14000],["AYAM KOCAK KEJU",15000],["KEBAB BEEF PETTIES",13000],["KEBAB CHICKEN",12000],["KEBAB PISANG COKLAT",8000],["KEBAB PISANG COKLAT KEJU",10000],["ROTI BAKAR",5000],["PISANG BAKAR",5000]];
-let cart={};const rp=n=>"Rp"+n.toLocaleString("id-ID");
-function render(){productsEl=document.getElementById("products");productsEl.innerHTML=products.map((p,i)=>`<div class="card"><h3>${p[0]}</h3><div class="price">${rp(p[1])}</div><div class="qty"><button onclick="chg(${i},-1)">−</button><b>${cart[i]||0}</b><button onclick="chg(${i},1)">+</button></div></div>`).join("");update()}
-function chg(i,d){cart[i]=Math.max(0,(cart[i]||0)+d);if(!cart[i])delete cart[i];render()}
-function update(){let c=0,t=0;for(const i in cart){c+=cart[i];t+=cart[i]*products[i][1]}document.getElementById("count").textContent=c;document.getElementById("total").textContent=rp(t)}
-function checkout(){if(!Object.keys(cart).length)return alert("Pilih menu terlebih dahulu.");let a=["Halo Kedai Shahia, saya mau pesan:",""],t=0;for(const i in cart){let q=cart[i],p=products[i],s=q*p[1];t+=s;a.push(`${q}x ${p[0]} - ${rp(s)}`)}a.push("",`Total: ${rp(t)}`);let n=document.getElementById("note").value.trim();if(n)a.push(`Catatan: ${n}`);a.push("","Mohon konfirmasi pesanan saya. Terima kasih.");location.href="https://wa.me/"+WA+"?text="+encodeURIComponent(a.join("\n"))}
+
+const WA = "6289513623864";
+
+const products = [
+  ["AYAM KOCAK PEDAS",12000],
+  ["AYAM KOCAK PEDAS KEJU",14000],
+  ["AYAM KOCAK KEJU",15000],
+  ["KEBAB BEEF PETTIES",13000],
+  ["KEBAB CHICKEN",12000],
+  ["KEBAB PISANG COKLAT",8000],
+  ["KEBAB PISANG COKLAT KEJU",10000],
+  ["ROTI BAKAR",5000],
+  ["PISANG BAKAR",5000]
+];
+
+let cart = {};
+
+function rupiah(n){
+  return "Rp" + n.toLocaleString("id-ID");
+}
+
+function render(){
+
+  const box = document.getElementById("products");
+  box.innerHTML = "";
+
+  products.forEach((p,i)=>{
+
+    const qty = cart[i] || 0;
+
+    box.innerHTML += `
+      <div class="product">
+
+        <div class="product-info">
+          <div class="product-name">${p[0]}</div>
+          <div class="price">${rupiah(p[1])}</div>
+        </div>
+
+        <div class="controls">
+          <button class="minus" onclick="ubah(${i},-1)">−</button>
+          <div class="qty">${qty}</div>
+          <button class="plus" onclick="ubah(${i},1)">+</button>
+        </div>
+
+      </div>
+    `;
+  });
+
+  update();
+}
+
+function ubah(i,d){
+
+  cart[i] = Math.max(0,(cart[i] || 0) + d);
+
+  if(cart[i] === 0){
+    delete cart[i];
+  }
+
+  render();
+}
+
+function update(){
+
+  let jumlah = 0;
+  let total = 0;
+
+  for(const i in cart){
+
+    jumlah += cart[i];
+    total += products[i][1] * cart[i];
+
+  }
+
+  document.getElementById("jumlah").textContent =
+    jumlah + " item";
+
+  document.getElementById("total").textContent =
+    rupiah(total);
+}
+
+function checkout(){
+
+  if(Object.keys(cart).length === 0){
+    alert("Silakan pilih menu terlebih dahulu.");
+    return;
+  }
+
+  const nama = document.getElementById("nama").value.trim();
+  const alamat = document.getElementById("alamat").value.trim();
+  const catatan = document.getElementById("catatan").value.trim();
+
+  if(!nama){
+    alert("Silakan isi nama terlebih dahulu.");
+    return;
+  }
+
+  if(!alamat){
+    alert("Silakan isi alamat atau lokasi.");
+    return;
+  }
+
+  let pesan = "🍔 *PESANAN KEDAI SHAHIA*%0A";
+  pesan += "====================%0A";
+  pesan += "👤 Nama: " + encodeURIComponent(nama) + "%0A";
+  pesan += "📍 Alamat: " + encodeURIComponent(alamat) + "%0A%0A";
+
+  pesan += "🛒 *Pesanan:*%0A";
+
+  let total = 0;
+
+  for(const i in cart){
+
+    const qty = cart[i];
+    const namaProduk = products[i][0];
+    const harga = products[i][1];
+    const subtotal = harga * qty;
+
+    total += subtotal;
+
+    pesan +=
+      "• " +
+      encodeURIComponent(namaProduk) +
+      " x" + qty +
+      " = " +
+      encodeURIComponent(rupiah(subtotal)) +
+      "%0A";
+  }
+
+  pesan += "%0A💰 *TOTAL: " + encodeURIComponent(rupiah(total)) + "*%0A";
+
+  if(catatan){
+    pesan +=
+      "📝 Catatan: " +
+      encodeURIComponent(catatan) +
+      "%0A";
+  }
+
+  pesan += "%0A🙏 Terima kasih.";
+
+  window.open(
+    "https://wa.me/" + WA + "?text=" + pesan,
+    "_blank"
+  );
+}
+
 render();
-</script></body></html>
+
+</script>
+
+</body>
+</html>
