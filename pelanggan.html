@@ -6,7 +6,9 @@
 <title>Kedai Shahia</title>
 
 <style>
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+}
 
 body{
   margin:0;
@@ -29,7 +31,7 @@ header h1{
 
 header p{
   margin:8px 0 0;
-  font-size:20px;
+  font-size:18px;
   font-weight:bold;
 }
 
@@ -41,141 +43,164 @@ header p{
 
 .hero{
   background:white;
-  padding:25px 18px;
-  border-radius:20px;
-  margin-bottom:22px;
+  padding:20px;
+  border-radius:15px;
+  margin-bottom:18px;
+  box-shadow:0 3px 12px rgba(0,0,0,.08);
   text-align:center;
-  box-shadow:0 3px 12px #ddd;
 }
 
 .hero h2{
-  margin:0 0 5px;
-  font-size:32px;
+  margin:0 0 8px;
+  color:#d84315;
 }
 
-.hero p{
-  margin:5px;
-  color:#666;
-  font-size:20px;
-}
-
-h2{
-  margin-top:25px;
+.menu{
+  display:grid;
+  gap:12px;
 }
 
 .product{
   background:white;
-  padding:15px;
-  margin:10px 0;
-  border-radius:16px;
-  box-shadow:0 3px 10px #ddd;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-}
-
-.product-info{
-  flex:1;
+  border-radius:14px;
+  padding:16px;
+  box-shadow:0 2px 10px rgba(0,0,0,.08);
 }
 
 .product-name{
-  font-weight:bold;
   font-size:18px;
+  font-weight:bold;
+  margin-bottom:6px;
 }
 
 .price{
   color:#d84315;
   font-weight:bold;
-  margin-top:5px;
-  font-size:18px;
-}
-
-.controls{
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-
-button{
-  border:0;
-  border-radius:12px;
-  padding:12px 17px;
-  font-size:20px;
-  font-weight:bold;
-  cursor:pointer;
-}
-
-.minus,.plus{
-  background:#d84315;
-  color:white;
+  margin-bottom:12px;
 }
 
 .qty{
-  min-width:25px;
-  text-align:center;
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:10px;
+}
+
+.qty button{
+  width:38px;
+  height:38px;
+  border:0;
+  border-radius:50%;
+  background:#d84315;
+  color:white;
+  font-size:22px;
   font-weight:bold;
+}
+
+.qty span{
+  min-width:30px;
+  text-align:center;
+  font-size:18px;
+  font-weight:bold;
+}
+
+.cart{
+  background:white;
+  margin-top:20px;
+  padding:18px;
+  border-radius:15px;
+  box-shadow:0 3px 12px rgba(0,0,0,.08);
+}
+
+.cart h2{
+  margin-top:0;
+  color:#d84315;
+}
+
+.cart-item{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  padding:8px 0;
+  border-bottom:1px solid #eee;
+}
+
+.total{
+  font-size:21px;
+  font-weight:bold;
+  margin-top:15px;
+  text-align:right;
+}
+
+.form{
+  background:white;
+  margin-top:20px;
+  padding:18px;
+  border-radius:15px;
+  box-shadow:0 3px 12px rgba(0,0,0,.08);
+}
+
+.form h2{
+  margin-top:0;
+  color:#d84315;
+}
+
+input,textarea{
+  width:100%;
+  padding:13px;
+  margin-bottom:12px;
+  border:1px solid #ddd;
+  border-radius:10px;
+  font-size:16px;
+}
+
+textarea{
+  min-height:80px;
+  resize:vertical;
+}
+
+.order-btn{
+  width:100%;
+  padding:16px;
+  border:0;
+  border-radius:12px;
+  background:#25d366;
+  color:white;
+  font-size:18px;
+  font-weight:bold;
+}
+
+.order-btn:disabled{
+  background:#aaa;
 }
 
 .loading{
   text-align:center;
   padding:25px;
-  color:#666;
+  color:#777;
 }
 
 .error{
   background:#ffebee;
   color:#c62828;
   padding:15px;
-  border-radius:12px;
-  margin:10px 0;
+  border-radius:10px;
+  text-align:center;
 }
 
-.cart{
-  position:sticky;
-  bottom:10px;
-  background:#222;
-  color:white;
-  padding:18px;
-  border-radius:25px;
-  margin-top:20px;
-  box-shadow:0 5px 20px #999;
-}
-
-.cart-top{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
-.cart-items{
-  font-size:16px;
-  margin-bottom:5px;
-}
-
-.total{
-  font-size:28px;
-  font-weight:bold;
-}
-
-.wa{
-  width:100%;
+.success{
+  background:#e8f5e9;
+  color:#2e7d32;
+  padding:15px;
+  border-radius:10px;
+  text-align:center;
   margin-top:15px;
-  background:#25D366;
-  color:white;
-  font-size:20px;
 }
 
 .empty{
   text-align:center;
-  color:#777;
   padding:20px;
-}
-
-@media(max-width:500px){
-  header h1{font-size:30px}
-  .product-name{font-size:17px}
-  .hero h2{font-size:28px}
+  color:#777;
 }
 </style>
 </head>
@@ -191,76 +216,94 @@ button{
 
   <div class="hero">
     <h2>🛒 Pesan Sekarang</h2>
-    <p>Pilih menu favorit kamu dan pesan langsung melalui WhatsApp.</p>
+    <p>Pilih makanan favorit kamu dan pesan dengan mudah.</p>
   </div>
 
-  <h2>🍴 Menu</h2>
-
-  <div id="menu">
-    <div class="loading">⏳ Memuat menu...</div>
+  <div id="menu" class="menu">
+    <div class="loading">Memuat menu...</div>
   </div>
 
   <div class="cart">
-    <div class="cart-top">
-      <div>
-        <div class="cart-items" id="jumlah">0 item</div>
-        <div class="total" id="total">Rp0</div>
-      </div>
+    <h2>🛒 Keranjang</h2>
+
+    <div id="cartItems">
+      <div class="empty">Belum ada pesanan.</div>
     </div>
 
-    <button class="wa" onclick="pesanWhatsApp()">
-      📱 PESAN VIA WHATSAPP
+    <div class="total">
+      Total: <span id="total">Rp0</span>
+    </div>
+  </div>
+
+  <div class="form">
+    <h2>📋 Data Pemesan</h2>
+
+    <input
+      type="text"
+      id="customerName"
+      placeholder="Nama kamu *"
+    >
+
+    <input
+      type="tel"
+      id="phone"
+      placeholder="Nomor HP / WhatsApp *"
+    >
+
+    <textarea
+      id="address"
+      placeholder="Alamat pengantaran *"
+    ></textarea>
+
+    <textarea
+      id="note"
+      placeholder="Catatan tambahan (opsional)"
+    ></textarea>
+
+    <button
+      class="order-btn"
+      id="orderBtn"
+      onclick="pesanSekarang()"
+    >
+      📲 PESAN SEKARANG
     </button>
+
+    <div id="message"></div>
   </div>
 
 </div>
 
 <script>
-
-/* ==============================
-   PENGATURAN SUPABASE
-   ============================== */
-
 const SUPABASE_URL =
 "https://bkcshfgzerlripxxpfuz.supabase.co";
 
 const SUPABASE_KEY =
 "sb_publishable_Nnc8yoURO-nJ32EcHWtDfA_zLmlMnnl";
 
-/* Nomor WhatsApp Kedai Shahia */
 const NOMOR_WA = "6289513623864";
 
-
-/* ==============================
-   DATA
-   ============================== */
-
-let produk = [];
-let keranjang = {};
+let products = [];
+let cart = {};
 
 
-/* ==============================
-   FORMAT RUPIAH
-   ============================== */
-
-function rupiah(angka){
-  return "Rp" + Number(angka).toLocaleString("id-ID");
+function formatRupiah(number){
+  return new Intl.NumberFormat("id-ID",{
+    style:"currency",
+    currency:"IDR",
+    maximumFractionDigits:0
+  }).format(number);
 }
 
 
-/* ==============================
-   AMBIL MENU DARI SUPABASE
-   ============================== */
+async function loadProducts(){
 
-async function ambilMenu(){
-
-  const menuEl = document.getElementById("menu");
+  const menu = document.getElementById("menu");
 
   try{
 
     const response = await fetch(
       SUPABASE_URL +
-      "/rest/v1/menu?select=*",
+      "/rest/v1/products?select=id,name,price,active&active=eq.true&order=id.asc",
       {
         method:"GET",
         headers:{
@@ -271,221 +314,367 @@ async function ambilMenu(){
     );
 
     if(!response.ok){
-  const detail = await response.text();
-  throw new Error(response.status + " - " + detail);
+      throw new Error("Gagal mengambil menu.");
     }
 
-    produk = await response.json();
+    products = await response.json();
 
-    if(!produk.length){
-      menuEl.innerHTML =
-        '<div class="empty">Belum ada menu tersedia.</div>';
+    if(products.length === 0){
+      menu.innerHTML =
+      '<div class="empty">Menu sedang kosong.</div>';
       return;
     }
 
-    tampilkanMenu();
+    menu.innerHTML = "";
+
+    products.forEach(product => {
+
+      cart[product.id] = 0;
+
+      const div = document.createElement("div");
+
+      div.className = "product";
+
+      div.innerHTML = `
+        <div class="product-name">
+          ${escapeHtml(product.name)}
+        </div>
+
+        <div class="price">
+          ${formatRupiah(product.price)}
+        </div>
+
+        <div class="qty">
+
+          <button onclick="ubahQty(${product.id},-1)">
+            −
+          </button>
+
+          <span id="qty-${product.id}">
+            0
+          </span>
+
+          <button onclick="ubahQty(${product.id},1)">
+            +
+          </button>
+
+        </div>
+      `;
+
+      menu.appendChild(div);
+
+    });
 
   }catch(error){
 
     console.error(error);
 
-      menuEl.innerHTML =
-    '<div class="error">' +
-    '❌ Error Supabase:<br>' +
-    error.message +
-    '</div>';
+    menu.innerHTML =
+    '<div class="error">Gagal memuat menu. Silakan refresh halaman.</div>';
+
   }
+
 }
 
 
-/* ==============================
-   TAMPILKAN MENU
-   ============================== */
+function escapeHtml(text){
 
-function tampilkanMenu(){
+  const div = document.createElement("div");
 
-  const menuEl = document.getElementById("menu");
+  div.textContent = text;
 
-  menuEl.innerHTML = "";
+  return div.innerHTML;
 
-  produk.forEach((item,index)=>{
-
-    keranjang[item.id] = keranjang[item.id] || 0;
-
-    const div = document.createElement("div");
-
-    div.className = "product";
-
-    div.innerHTML = `
-      <div class="product-info">
-        <div class="product-name">
-          ${escapeHTML(item.nama)}
-        </div>
-
-        <div class="price">
-          ${rupiah(item.harga)}
-        </div>
-      </div>
-
-      <div class="controls">
-
-        <button
-          class="minus"
-          onclick="ubahJumlah(${item.id},-1)">
-          −
-        </button>
-
-        <div
-          class="qty"
-          id="qty-${item.id}">
-          ${keranjang[item.id]}
-        </div>
-
-        <button
-          class="plus"
-          onclick="ubahJumlah(${item.id},1)">
-          +
-        </button>
-
-      </div>
-    `;
-
-    menuEl.appendChild(div);
-  });
-
-  hitungTotal();
 }
 
 
-/* ==============================
-   UBAH JUMLAH
-   ============================== */
+function ubahQty(id, jumlah){
 
-function ubahJumlah(id,perubahan){
-
-  keranjang[id] =
-    (keranjang[id] || 0) + perubahan;
-
-  if(keranjang[id] < 0){
-    keranjang[id] = 0;
+  if(!cart[id]){
+    cart[id] = 0;
   }
 
-  const qty = document.getElementById("qty-" + id);
+  cart[id] += jumlah;
 
-  if(qty){
-    qty.textContent = keranjang[id];
+  if(cart[id] < 0){
+    cart[id] = 0;
   }
 
-  hitungTotal();
+  const qtyElement =
+  document.getElementById("qty-" + id);
+
+  if(qtyElement){
+    qtyElement.textContent = cart[id];
+  }
+
+  updateCart();
+
 }
 
 
-/* ==============================
-   HITUNG TOTAL
-   ============================== */
+function updateCart(){
 
-function hitungTotal(){
+  const cartItems =
+  document.getElementById("cartItems");
 
   let total = 0;
-  let jumlah = 0;
 
-  produk.forEach(item=>{
+  let html = "";
 
-    const qty = keranjang[item.id] || 0;
+  products.forEach(product => {
 
-    jumlah += qty;
-    total += Number(item.harga) * qty;
-
-  });
-
-  document.getElementById("jumlah").textContent =
-    jumlah + " item";
-
-  document.getElementById("total").textContent =
-    rupiah(total);
-}
-
-
-/* ==============================
-   PESAN WHATSAPP
-   ============================== */
-
-function pesanWhatsApp(){
-
-  let pesan =
-    "Halo Kedai Shahia 👋%0A%0A" +
-    "Saya ingin memesan:%0A";
-
-  let adaPesanan = false;
-  let total = 0;
-
-  produk.forEach(item=>{
-
-    const qty = keranjang[item.id] || 0;
+    const qty = cart[product.id] || 0;
 
     if(qty > 0){
 
-      adaPesanan = true;
-
       const subtotal =
-        Number(item.harga) * qty;
+      qty * product.price;
 
       total += subtotal;
 
-      pesan +=
-        "- " +
-        item.nama +
-        " x" +
-        qty +
-        " = " +
-        rupiah(subtotal) +
-        "%0A";
+      html += `
+        <div class="cart-item">
+          <span>
+            ${escapeHtml(product.name)}
+            × ${qty}
+          </span>
+
+          <strong>
+            ${formatRupiah(subtotal)}
+          </strong>
+        </div>
+      `;
+
     }
+
   });
 
-  if(!adaPesanan){
+  if(html === ""){
 
-    alert("Silakan pilih menu terlebih dahulu 😊");
-    return;
+    cartItems.innerHTML =
+    '<div class="empty">Belum ada pesanan.</div>';
+
+  }else{
+
+    cartItems.innerHTML = html;
+
   }
 
-  pesan +=
-    "%0ATotal: " +
-    rupiah(total) +
-    "%0A%0A" +
-    "Terima kasih 🙏";
+  document.getElementById("total").textContent =
+  formatRupiah(total);
 
-  const url =
+}
+
+
+function getOrderItems(){
+
+  const items = [];
+
+  products.forEach(product => {
+
+    const qty = cart[product.id] || 0;
+
+    if(qty > 0){
+
+      items.push({
+        id:product.id,
+        name:product.name,
+        price:product.price,
+        qty:qty,
+        subtotal:qty * product.price
+      });
+
+    }
+
+  });
+
+  return items;
+
+}
+
+
+async function pesanSekarang(){
+
+  const name =
+  document.getElementById("customerName").value.trim();
+
+  const phone =
+  document.getElementById("phone").value.trim();
+
+  const address =
+  document.getElementById("address").value.trim();
+
+  const note =
+  document.getElementById("note").value.trim();
+
+  const message =
+  document.getElementById("message");
+
+  const button =
+  document.getElementById("orderBtn");
+
+  const items = getOrderItems();
+
+  if(items.length === 0){
+
+    message.innerHTML =
+    '<div class="error">Pilih menu terlebih dahulu.</div>';
+
+    return;
+
+  }
+
+  if(!name){
+
+    message.innerHTML =
+    '<div class="error">Nama wajib diisi.</div>';
+
+    return;
+
+  }
+
+  if(!phone){
+
+    message.innerHTML =
+    '<div class="error">Nomor HP wajib diisi.</div>';
+
+    return;
+
+  }
+
+  if(!address){
+
+    message.innerHTML =
+    '<div class="error">Alamat wajib diisi.</div>';
+
+    return;
+
+  }
+
+  let total = 0;
+
+  items.forEach(item => {
+    total += item.subtotal;
+  });
+
+
+  button.disabled = true;
+
+  button.textContent =
+  "⏳ MENYIMPAN PESANAN...";
+
+  message.innerHTML = "";
+
+
+  try{
+
+    const response = await fetch(
+      SUPABASE_URL + "/rest/v1/orders",
+      {
+        method:"POST",
+
+        headers:{
+          "apikey":SUPABASE_KEY,
+          "Authorization":"Bearer " + SUPABASE_KEY,
+          "Content-Type":"application/json",
+          "Prefer":"return=minimal"
+        },
+
+        body:JSON.stringify({
+          customer_name:name,
+          phone:phone,
+          address:address,
+          items:items,
+          total:total,
+          status:"baru"
+        })
+      }
+    );
+
+
+    if(!response.ok){
+
+      const errorText =
+      await response.text();
+
+      console.error(errorText);
+
+      throw new Error(
+        "Pesanan gagal disimpan."
+      );
+
+    }
+
+
+    let waMessage =
+`🍔 *PESANAN KEDAI SHAHIA*
+
+👤 Nama: ${name}
+📱 No HP: ${phone}
+📍 Alamat: ${address}
+
+*Pesanan:*`;
+
+    items.forEach(item => {
+
+      waMessage +=
+      `\n• ${item.name} x${item.qty} = ${formatRupiah(item.subtotal)}`;
+
+    });
+
+
+    waMessage +=
+    `\n\n💰 *TOTAL: ${formatRupiah(total)}*`;
+
+
+    if(note){
+
+      waMessage +=
+      `\n📝 Catatan: ${note}`;
+
+    }
+
+
+    waMessage +=
+    `\n\nTerima kasih sudah memesan di Kedai Shahia 🙏`;
+
+
+    message.innerHTML =
+    '<div class="success">✅ Pesanan berhasil disimpan! WhatsApp akan dibuka...</div>';
+
+
+    const waUrl =
     "https://wa.me/" +
     NOMOR_WA +
     "?text=" +
-    pesan;
+    encodeURIComponent(waMessage);
 
-  window.open(url,"_blank");
+
+    setTimeout(() => {
+
+      window.location.href = waUrl;
+
+    },500);
+
+
+  }catch(error){
+
+    console.error(error);
+
+    message.innerHTML =
+    '<div class="error">❌ Pesanan gagal disimpan. Coba lagi.</div>';
+
+    button.disabled = false;
+
+    button.textContent =
+    "📲 PESAN SEKARANG";
+
+  }
+
 }
 
 
-/* ==============================
-   KEAMANAN TEKS
-   ============================== */
-
-function escapeHTML(teks){
-
-  return String(teks)
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
-}
-
-
-/* ==============================
-   MULAI
-   ============================== */
-
-ambilMenu();
-
+loadProducts();
 </script>
 
 </body>
