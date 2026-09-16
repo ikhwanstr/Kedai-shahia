@@ -385,14 +385,45 @@ function formatItems(items){
   if(!items) return "-";
 
   if(typeof items === "string"){
-    return items;
+    try{
+      items = JSON.parse(items);
+    }catch(e){
+      return items;
+    }
   }
 
-  try{
-    return JSON.stringify(items);
-  }catch(e){
+  if(!Array.isArray(items)){
     return "-";
   }
+
+  let html = "";
+
+  items.forEach(item => {
+
+    const nama = escapeHtml(item.name || "-");
+    const qty = Number(item.qty || 0);
+    const subtotal = Number(item.subtotal || 0);
+
+    html += `
+      <div class="order-item">
+        <span>🍔 ${nama} × ${qty}</span>
+        <b>Rp ${subtotal.toLocaleString("id-ID")}</b>
+      </div>
+    `;
+
+  });
+
+  return html || "-";
+}
+
+
+function escapeHtml(text){
+
+  const div = document.createElement("div");
+
+  div.textContent = text;
+
+  return div.innerHTML;
 
 }
 
