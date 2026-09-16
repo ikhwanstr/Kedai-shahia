@@ -3,121 +3,75 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Admin Kedai Shahia</title>
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: Arial, sans-serif;
       background: #f4f4f5;
       color: #18181b;
     }
-
     header {
       background: #111827;
       color: white;
-      padding: 20px;
+      padding: 22px 16px;
       text-align: center;
     }
+    header h1 { margin: 0 0 8px; font-size: 30px; }
+    header p { margin: 0; font-size: 17px; }
 
     main {
       max-width: 900px;
       margin: auto;
-      padding: 15px;
+      padding: 16px;
     }
-
     .box {
       background: white;
       padding: 18px;
-      border-radius: 15px;
+      border-radius: 16px;
       margin-bottom: 18px;
-      box-shadow: 0 2px 8px #0001;
+      box-shadow: 0 2px 10px #0001;
     }
-
-    input,
-    select {
+    input, select {
       width: 100%;
-      padding: 12px;
+      padding: 13px;
       margin: 7px 0;
       border: 1px solid #ccc;
       border-radius: 9px;
-      font-size: 15px;
+      font-size: 16px;
     }
-
     button {
       border: 0;
       padding: 11px 15px;
       border-radius: 9px;
       cursor: pointer;
       margin: 4px;
-      font-size: 14px;
+      font-size: 15px;
     }
-
-    .primary {
-      background: #16a34a;
-      color: white;
-    }
-
-    .edit {
-      background: #2563eb;
-      color: white;
-    }
-
-    .hapus {
-      background: #dc2626;
-      color: white;
-    }
-
-    .status {
-      background: #f59e0b;
-      color: white;
-    }
-
-    .logout {
-      background: #dc2626;
-      color: white;
-      float: right;
-    }
-
-    .menu-item,
-    .order-item {
+    .primary { background: #16a34a; color: white; }
+    .edit { background: #2563eb; color: white; }
+    .hapus { background: #dc2626; color: white; }
+    .status { background: #f59e0b; color: white; }
+    .wa { background: #16a34a; color: white; }
+    .logout { background: #dc2626; color: white; float: right; }
+    .new-order { border: 2px solid #16a34a; }
+    .notice-text { font-size: 16px; line-height: 1.5; }
+    .menu-item, .order-item {
       border: 1px solid #ddd;
       padding: 14px;
       border-radius: 10px;
       margin-top: 10px;
+      background: #fff;
     }
-
-    .order-item {
-      background: #fafafa;
-    }
-
-    .error {
-      color: #dc2626;
-      text-align: center;
-      margin-top: 10px;
-    }
-
-    .success {
-      color: #16a34a;
-      text-align: center;
-    }
-
-    .muted {
-      color: #666;
-      font-size: 13px;
-    }
-
-    #adminPanel {
-      display: none;
-    }
-
+    .order-item { background: #fafafa; }
+    .error { color: #dc2626; text-align: center; margin-top: 10px; white-space: pre-wrap; }
+    .success { color: #16a34a; margin: 10px 0; }
+    .muted { color: #666; font-size: 13px; }
+    .empty { color: #666; padding: 10px 0; }
+    #adminPanel { display: none; }
     #loginBox {
       max-width: 420px;
       margin: 60px auto;
@@ -126,816 +80,535 @@
       border-radius: 15px;
       box-shadow: 0 2px 10px #0002;
     }
-
     .order-item select {
       width: auto;
-      min-width: 160px;
+      min-width: 170px;
+      display: inline-block;
     }
+    .item-row {
+      padding: 5px 0;
+      border-bottom: 1px dashed #ddd;
+    }
+    .item-row:last-child { border-bottom: 0; }
+    .clear { clear: both; }
   </style>
 </head>
 
 <body>
-
   <header>
     <h1>🍔 Admin Kedai Shahia</h1>
     <p>Kelola menu dan pesanan</p>
   </header>
 
-  <!-- LOGIN -->
   <div id="loginBox">
-
     <h2>🔐 Login Admin</h2>
 
-    <input
-      id="loginEmail"
-      type="email"
-      placeholder="Email Admin"
-    >
+    <input id="loginEmail" type="email" placeholder="Email Admin" autocomplete="username">
+    <input id="loginPassword" type="password" placeholder="Kata Sandi Admin" autocomplete="current-password">
 
-    <input
-      id="loginPassword"
-      type="password"
-      placeholder="Kata Sandi Admin"
-    >
-
-    <button
-      class="primary"
-      style="width:100%;"
-      onclick="loginAdmin()"
-    >
+    <button class="primary" style="width:100%;" onclick="loginAdmin()">
       🔑 MASUK
     </button>
 
     <div id="loginError" class="error"></div>
-
   </div>
 
-
-  <!-- PANEL ADMIN -->
   <div id="adminPanel">
-
     <main>
-
-      <button class="logout" onclick="logoutAdmin()">
-        🚪 Keluar
-      </button>
-
+      <button class="logout" onclick="logoutAdmin()">🚪 Keluar</button>
       <h2>Dashboard Admin</h2>
+      <div class="clear"></div>
 
-      <!-- MENU -->
       <div class="box">
-
         <h3>🍔 Daftar Menu</h3>
 
-        <input
-          id="nama"
-          type="text"
-          placeholder="Nama menu"
-        >
+        <input id="nama" type="text" placeholder="Nama menu">
+        <input id="harga" type="number" placeholder="Harga" min="0">
 
-        <input
-          id="harga"
-          type="number"
-          placeholder="Harga"
-        >
-
-        <button class="primary" onclick="tambahMenu()">
-          ➕ Tambah Menu
-        </button>
+        <button class="primary" onclick="tambahMenu()">➕ Tambah Menu</button>
 
         <div id="menuMessage" class="success"></div>
-
-        <div id="daftarMenu">
-          Memuat menu...
-        </div>
-
+        <div id="daftarMenu">Memuat menu...</div>
       </div>
 
+      <div id="orderNotice" class="box" style="display:none; border-left:5px solid #16a34a;">
+        <h3>🔔 Pesanan Baru</h3>
+        <div id="orderNoticeText"></div>
+        <button class="primary" onclick="tutupNotifikasi()">Oke, sudah dilihat</button>
+      </div>
 
-      <!-- PESANAN -->
       <div class="box">
-
         <h3>📦 Pesanan Masuk</h3>
-
-        <div id="daftarPesanan">
-          Memuat pesanan...
-        </div>
-
+        <div id="daftarPesanan">Memuat pesanan...</div>
       </div>
-
     </main>
-
   </div>
 
-
 <script>
+  const SUPABASE_URL = "https://bkcshfgzerlripxxpfuz.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_Nnc8yoURO-nJ32EcHWtDfA_zLmlMnnl";
 
-  // =========================
-  // SUPABASE
-  // =========================
+  const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
 
-  const SUPABASE_URL =
-    "https://bkcshfgzerlripxxpfuz.supabase.co";
-
-  const SUPABASE_KEY =
-    "sb_publishable_Nnc8yoURO-nJ32EcHWtDfA_zLmlMnnl";
-
-  const supabaseClient =
-    window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_KEY
-    );
-
-
-  // =========================
-  // LOGIN
-  // =========================
+  let orderIdsSebelumnya = new Set();
+  let sudahMuatPesananPertama = false;
+  let intervalPesanan = null;
 
   async function loginAdmin() {
-
-    const email =
-      document.getElementById("loginEmail").value.trim();
-
-    const password =
-      document.getElementById("loginPassword").value;
-
-    const errorBox =
-      document.getElementById("loginError");
+    const email = document.getElementById("loginEmail").value.trim();
+    const password = document.getElementById("loginPassword").value;
+    const errorBox = document.getElementById("loginError");
 
     errorBox.textContent = "";
 
     if (!email || !password) {
-
-      errorBox.textContent =
-        "Email dan password wajib diisi.";
-
+      errorBox.textContent = "Email dan password wajib diisi.";
       return;
     }
 
-    errorBox.textContent =
-      "Sedang masuk...";
+    errorBox.textContent = "Sedang masuk...";
 
-    const { error } =
-      await supabaseClient.auth.signInWithPassword({
-        email: email,
-        password: password
-      });
+    const { error } = await supabaseClient.auth.signInWithPassword({
+      email,
+      password
+    });
 
     if (error) {
-
-      errorBox.textContent =
-        "Login gagal: " + error.message;
-
+      errorBox.textContent = "Login gagal: " + error.message;
       return;
     }
 
     errorBox.textContent = "";
-
     tampilkanAdmin();
   }
 
-
-  // =========================
-  // CEK LOGIN
-  // =========================
-
   async function cekLogin() {
+    const { data, error } = await supabaseClient.auth.getSession();
 
-    const {
-      data: {
-        session
-      }
-    } = await supabaseClient.auth.getSession();
+    if (error) {
+      document.getElementById("loginError").textContent =
+        "Gagal mengecek login: " + error.message;
+      return;
+    }
 
-    if (session) {
-
+    if (data.session) {
       tampilkanAdmin();
-
     } else {
-
-      document.getElementById("loginBox")
-        .style.display = "block";
-
-      document.getElementById("adminPanel")
-        .style.display = "none";
+      document.getElementById("loginBox").style.display = "block";
+      document.getElementById("adminPanel").style.display = "none";
     }
   }
 
-
   function tampilkanAdmin() {
-
-    document.getElementById("loginBox")
-      .style.display = "none";
-
-    document.getElementById("adminPanel")
-      .style.display = "block";
-
+    document.getElementById("loginBox").style.display = "none";
+    document.getElementById("adminPanel").style.display = "block";
     muatMenu();
     muatPesanan();
+    mulaiPantauPesanan();
   }
 
-
-  // =========================
-  // LOGOUT
-  // =========================
-
   async function logoutAdmin() {
+    const { error } = await supabaseClient.auth.signOut();
 
-    await supabaseClient.auth.signOut();
+    if (error) {
+      alert("Gagal keluar: " + error.message);
+      return;
+    }
 
     location.reload();
   }
 
-
-  // =========================
-  // MENU
-  // =========================
-
   async function muatMenu() {
+    const container = document.getElementById("daftarMenu");
+    container.innerHTML = "Memuat menu...";
 
-    const container =
-      document.getElementById("daftarMenu");
-
-    container.innerHTML =
-      "Memuat menu...";
-
-    const {
-      data,
-      error
-    } = await supabaseClient
-      .from("produk")
-      .select("*")
-      .order("nama", {
-        ascending: true
-      });
+    const { data, error } = await supabaseClient
+      .from("products")
+      .select("id,name,price,active,created_at")
+      .order("id", { ascending: true });
 
     if (error) {
-
       container.innerHTML =
-        "❌ Gagal mengambil menu:<br>" +
-        error.message;
-
+        "❌ Gagal mengambil menu:<br>" + escapeHTML(error.message);
       return;
     }
 
     if (!data || data.length === 0) {
-
-      container.innerHTML =
-        "Belum ada menu.";
-
+      container.innerHTML = '<div class="empty">Belum ada menu.</div>';
       return;
     }
 
     container.innerHTML = "";
 
     data.forEach(menu => {
+      const item = document.createElement("div");
+      item.className = "menu-item";
 
-      const item =
-        document.createElement("div");
-
-      item.className =
-        "menu-item";
-
-      const nama =
-        escapeHTML(menu.nama || "-");
-
-      const harga =
-        Number(menu.harga || 0);
+      const nama = escapeHTML(menu.name || "-");
+      const harga = Number(menu.price || 0);
+      const id = Number(menu.id);
 
       item.innerHTML = `
-
         <b>${nama}</b><br>
-
-        <strong>
-          Rp${formatRupiah(harga)}
-        </strong>
-
-        <br>
-
+        <strong>Rp${formatRupiah(harga)}</strong><br>
         <span class="muted">
-          ${menu.aktif
-            ? "🟢 Aktif"
-            : "🔴 Tidak aktif"}
+          ${menu.active ? "🟢 Aktif" : "🔴 Tidak aktif"}
         </span>
-
         <br><br>
 
-        <button
-          class="edit"
-          onclick="editMenu(
-            '${escapeJS(menu.pengenal)}',
-            '${escapeJS(menu.nama || "")}',
-            '${harga}'
-          )"
-        >
+        <button class="edit"
+          onclick="editMenu(${id}, ${JSON.stringify(menu.name || "")}, ${harga})">
           ✏️ Edit
         </button>
 
-        <button
-          class="status"
-          onclick="ubahAktif(
-            '${escapeJS(menu.pengenal)}',
-            ${menu.aktif}
-          )"
-        >
-          ${menu.aktif
-            ? "🔴 Nonaktifkan"
-            : "🟢 Aktifkan"}
+        <button class="status"
+          onclick="ubahAktif(${id}, ${!!menu.active})">
+          ${menu.active ? "🔴 Nonaktifkan" : "🟢 Aktifkan"}
         </button>
 
-        <button
-          class="hapus"
-          onclick="hapusMenu(
-            '${escapeJS(menu.pengenal)}'
-          )"
-        >
+        <button class="hapus"
+          onclick="hapusMenu(${id})">
           🗑️ Hapus
         </button>
-
       `;
 
       container.appendChild(item);
-
     });
   }
 
-
-  // =========================
-  // TAMBAH MENU
-  // =========================
-
   async function tambahMenu() {
-
-    const nama =
-      document
-        .getElementById("nama")
-        .value
-        .trim();
-
-    const harga =
-      Number(
-        document
-          .getElementById("harga")
-          .value
-      );
-
-    const message =
-      document.getElementById("menuMessage");
+    const nama = document.getElementById("nama").value.trim();
+    const harga = Number(document.getElementById("harga").value);
+    const message = document.getElementById("menuMessage");
 
     message.textContent = "";
 
-    if (!nama || !harga) {
-
-      alert(
-        "Nama dan harga wajib diisi."
-      );
-
+    if (!nama || !Number.isFinite(harga) || harga <= 0) {
+      alert("Nama dan harga yang benar wajib diisi.");
       return;
     }
 
-    const {
-      error
-    } = await supabaseClient
-      .from("produk")
+    const { error } = await supabaseClient
+      .from("products")
       .insert({
-        nama: nama,
-        harga: harga,
-        aktif: true
+        name: nama,
+        price: harga,
+        active: true
       });
 
     if (error) {
-
-      alert(
-        "Gagal menambah menu:\n" +
-        error.message
-      );
-
+      alert("Gagal menambah menu:\n" + error.message);
       return;
     }
 
-    document.getElementById("nama")
-      .value = "";
-
-    document.getElementById("harga")
-      .value = "";
-
-    message.textContent =
-      "✅ Menu berhasil ditambahkan.";
-
+    document.getElementById("nama").value = "";
+    document.getElementById("harga").value = "";
+    message.textContent = "✅ Menu berhasil ditambahkan.";
     muatMenu();
   }
 
+  async function editMenu(id, namaLama, hargaLama) {
+    const namaBaru = prompt("Nama menu:", namaLama);
+    if (namaBaru === null) return;
 
-  // =========================
-  // EDIT MENU
-  // =========================
+    const hargaBaru = prompt("Harga:", hargaLama);
+    if (hargaBaru === null) return;
 
-  async function editMenu(
-    pengenal,
-    namaLama,
-    hargaLama
-  ) {
+    const nama = namaBaru.trim();
+    const harga = Number(hargaBaru);
 
-    const namaBaru =
-      prompt(
-        "Nama menu:",
-        namaLama
-      );
-
-    if (namaBaru === null) {
+    if (!nama || !Number.isFinite(harga) || harga <= 0) {
+      alert("Nama dan harga yang benar wajib diisi.");
       return;
     }
 
-    const hargaBaru =
-      prompt(
-        "Harga:",
-        hargaLama
-      );
-
-    if (hargaBaru === null) {
-      return;
-    }
-
-    if (!namaBaru.trim() || !hargaBaru) {
-
-      alert(
-        "Nama dan harga wajib diisi."
-      );
-
-      return;
-    }
-
-    const {
-      error
-    } = await supabaseClient
-      .from("produk")
+    const { error } = await supabaseClient
+      .from("products")
       .update({
-        nama: namaBaru.trim(),
-        harga: Number(hargaBaru)
+        name: nama,
+        price: harga
       })
-      .eq("pengenal", pengenal);
+      .eq("id", id);
 
     if (error) {
-
-      alert(
-        "Gagal mengubah menu:\n" +
-        error.message
-      );
-
+      alert("Gagal mengubah menu:\n" + error.message);
       return;
     }
 
     muatMenu();
   }
 
-
-  // =========================
-  // AKTIF / NONAKTIF
-  // =========================
-
-  async function ubahAktif(
-    pengenal,
-    aktif
-  ) {
-
-    const {
-      error
-    } = await supabaseClient
-      .from("produk")
-      .update({
-        aktif: !aktif
-      })
-      .eq("pengenal", pengenal);
+  async function ubahAktif(id, active) {
+    const { error } = await supabaseClient
+      .from("products")
+      .update({ active: !active })
+      .eq("id", id);
 
     if (error) {
-
-      alert(
-        "Gagal mengubah status:\n" +
-        error.message
-      );
-
+      alert("Gagal mengubah status:\n" + error.message);
       return;
     }
 
     muatMenu();
   }
 
+  async function hapusMenu(id) {
+    if (!confirm("Hapus menu ini?")) return;
 
-  // =========================
-  // HAPUS MENU
-  // =========================
-
-  async function hapusMenu(
-    pengenal
-  ) {
-
-    if (
-      !confirm(
-        "Hapus menu ini?"
-      )
-    ) {
-      return;
-    }
-
-    const {
-      error
-    } = await supabaseClient
-      .from("produk")
+    const { error } = await supabaseClient
+      .from("products")
       .delete()
-      .eq("pengenal", pengenal);
+      .eq("id", id);
 
     if (error) {
-
-      alert(
-        "Gagal menghapus menu:\n" +
-        error.message
-      );
-
+      alert("Gagal menghapus menu:\n" + error.message);
       return;
     }
 
     muatMenu();
   }
-
-
-  // =========================
-  // PESANAN
-  // =========================
 
   async function muatPesanan() {
+    const container = document.getElementById("daftarPesanan");
+    container.innerHTML = "Memuat pesanan...";
 
-    const container =
-      document.getElementById(
-        "daftarPesanan"
-      );
-
-    container.innerHTML =
-      "Memuat pesanan...";
-
-    const {
-      data,
-      error
-    } = await supabaseClient
-      .from("perintah")
+    const { data, error } = await supabaseClient
+      .from("orders")
       .select("*")
-      .order(
-        "dibuat_pada",
-        {
-          ascending: false
-        }
-      );
+      .order("created_at", { ascending: false });
 
     if (error) {
-
       container.innerHTML =
-        "❌ Gagal mengambil pesanan:<br>" +
-        error.message;
-
+        "❌ Gagal mengambil pesanan:<br>" + escapeHTML(error.message);
       return;
     }
 
     if (!data || data.length === 0) {
-
-      container.innerHTML =
-        "Belum ada pesanan.";
-
+      container.innerHTML = '<div class="empty">Belum ada pesanan.</div>';
       return;
     }
 
     container.innerHTML = "";
 
     data.forEach(pesanan => {
-
-      const item =
-        document.createElement("div");
-
-      item.className =
-        "order-item";
+      const item = document.createElement("div");
+      item.className = "order-item" + (
+        !sudahMuatPesananPertama && false ? " new-order" : ""
+      );
 
       item.innerHTML = `
-
-        <b>
-          👤 ${escapeHTML(
-            pesanan.nama_pelanggan || "-"
-          )}
-        </b>
-
+        <b>👤 ${escapeHTML(pesanan.customer_name || "-")}</b><br>
+        📞 ${escapeHTML(pesanan.phone || "-")}<br>
+        📍 ${escapeHTML(pesanan.address || "-")}<br>
+        ${pesanan.phone ? `<button class="wa" onclick="bukaWhatsApp(${JSON.stringify(String(pesanan.phone))}, ${JSON.stringify(pesanWhatsApp(pesanan))})">💬 WhatsApp Pelanggan</button>` : ""}
         <br>
 
-        📞 ${escapeHTML(
-          pesanan.telepon || "-"
-        )}
+        <b>🛒 Pesanan:</b>
+        <div>${formatItems(pesanan.items)}</div>
 
         <br>
-
-        📍 ${escapeHTML(
-          pesanan.alamat || "-"
-        )}
-
+        💰 <b>Rp${formatRupiah(pesanan.total || 0)}</b>
         <br><br>
 
-        ${formatItem(
-          pesanan["barang-barang"]
-        )}
-
-        <br>
-
-        💰 <b>
-          Rp${formatRupiah(
-            pesanan.total || 0
-          )}
-        </b>
-
-        <br><br>
-
-        📌 Status:
-
-        <select
-          onchange="ubahStatus(
-            '${escapeJS(pesanan.pengenal)}',
-            this.value
-          )"
-        >
-
-          <option
-            value="baru"
-            ${pesanan.status === "baru"
-              ? "selected"
-              : ""}
-          >
+        📌 <b>Status:</b>
+        <select onchange="ubahStatus(${Number(pesanan.id)}, this.value)">
+          <option value="baru" ${pesanan.status === "baru" ? "selected" : ""}>
             Baru
           </option>
-
-          <option
-            value="diproses"
-            ${pesanan.status === "diproses"
-              ? "selected"
-              : ""}
-          >
+          <option value="diproses" ${pesanan.status === "diproses" ? "selected" : ""}>
             Diproses
           </option>
-
-          <option
-            value="selesai"
-            ${pesanan.status === "selesai"
-              ? "selected"
-              : ""}
-          >
+          <option value="selesai" ${pesanan.status === "selesai" ? "selected" : ""}>
             Selesai
           </option>
-
-          <option
-            value="dibatalkan"
-            ${pesanan.status === "dibatalkan"
-              ? "selected"
-              : ""}
-          >
+          <option value="dibatalkan" ${pesanan.status === "dibatalkan" ? "selected" : ""}>
             Dibatalkan
           </option>
-
         </select>
 
+        <div class="muted">
+          ID Pesanan: ${Number(pesanan.id)}
+        </div>
       `;
 
       container.appendChild(item);
     });
+
+    orderIdsSebelumnya = new Set(data.map(p => Number(p.id)));
+    sudahMuatPesananPertama = true;
   }
 
+  async function mulaiPantauPesanan() {
+    if (intervalPesanan) return;
 
-  // =========================
-  // FORMAT BARANG
-  // =========================
+    // Cek berkala agar tetap bekerja walaupun Realtime belum aktif.
+    intervalPesanan = setInterval(async () => {
+      const { data, error } = await supabaseClient
+        .from("orders")
+        .select("id,customer_name,phone,total,status,created_at")
+        .order("created_at", { ascending: false });
 
-  function formatItem(barang) {
+      if (error || !data) return;
 
-    if (!barang) {
-      return "-";
+      const baru = data.filter(p => !orderIdsSebelumnya.has(Number(p.id)));
+
+      if (sudahMuatPesananPertama && baru.length > 0) {
+        tampilkanNotifikasiPesananBaru(baru[0]);
+        muatPesanan();
+      } else if (!sudahMuatPesananPertama) {
+        orderIdsSebelumnya = new Set(data.map(p => Number(p.id)));
+        sudahMuatPesananPertama = true;
+      }
+    }, 10000);
+
+    // Coba Realtime juga; polling di atas tetap menjadi cadangan.
+    supabaseClient
+      .channel("orders-admin-watch")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "orders" },
+        payload => {
+          const order = payload.new;
+          if (order && !orderIdsSebelumnya.has(Number(order.id))) {
+            tampilkanNotifikasiPesananBaru(order);
+            orderIdsSebelumnya.add(Number(order.id));
+            muatPesanan();
+          }
+        }
+      )
+      .subscribe();
+  }
+
+  function tampilkanNotifikasiPesananBaru(pesanan) {
+    const box = document.getElementById("orderNotice");
+    const text = document.getElementById("orderNoticeText");
+
+    text.innerHTML = `
+      <div class="notice-text">
+        🔔 <b>Ada pesanan baru!</b><br>
+        👤 ${escapeHTML(pesanan.customer_name || "-")}<br>
+        💰 Rp${formatRupiah(pesanan.total || 0)}<br>
+        ID Pesanan: ${Number(pesanan.id)}
+      </div>
+    `;
+
+    box.style.display = "block";
+
+    // Bunyi singkat jika browser mengizinkan audio setelah interaksi pengguna.
+    try {
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if (Ctx) {
+        const ctx = new Ctx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.frequency.value = 880;
+        gain.gain.value = 0.08;
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.18);
+      }
+    } catch (e) {}
+  }
+
+  function tutupNotifikasi() {
+    document.getElementById("orderNotice").style.display = "none";
+  }
+
+  function pesanWhatsApp(pesanan) {
+    const daftar = formatItemsText(pesanan.items);
+    return `Halo ${pesanan.customer_name || ""}, pesanan dari Kedai Shahia sudah kami terima.\n\n${daftar}\nTotal: Rp${formatRupiah(pesanan.total || 0)}\nStatus: ${pesanan.status || "baru"}\n\nTerima kasih 🙏`;
+  }
+
+  function formatItemsText(items) {
+    if (!items) return "Detail pesanan tidak tersedia.";
+    if (typeof items === "string") {
+      try { items = JSON.parse(items); } catch (e) { return items; }
     }
+    if (!Array.isArray(items)) return JSON.stringify(items);
+    return items.map(item => {
+      const nama = item.name || item.nama || "-";
+      const qty = Number(item.qty ?? item.jumlah ?? 0);
+      const subtotal = Number(item.subtotal ?? ((item.price ?? item.harga ?? 0) * qty));
+      return `${nama} x ${qty} - Rp${formatRupiah(subtotal)}`;
+    }).join("\n");
+  }
 
-    if (typeof barang === "string") {
+  function bukaWhatsApp(nomor, pesan) {
+    let n = String(nomor || "").replace(/[^0-9]/g, "");
+    if (n.startsWith("0")) n = "62" + n.slice(1);
+    if (!n.startsWith("62")) n = "62" + n;
+    const url = "https://wa.me/" + n + "?text=" + encodeURIComponent(pesan);
+    window.open(url, "_blank");
+  }
 
+  function formatItems(items) {
+    if (!items) return '<div class="empty">Tidak ada detail barang.</div>';
+
+    if (typeof items === "string") {
       try {
-        barang = JSON.parse(barang);
+        items = JSON.parse(items);
       } catch (e) {
-        return escapeHTML(barang);
+        return escapeHTML(items);
       }
     }
 
-    if (!Array.isArray(barang)) {
-      return "-";
+    if (!Array.isArray(items)) {
+      return escapeHTML(JSON.stringify(items));
     }
 
-    return barang.map(item => {
-
-      const nama =
-        escapeHTML(
-          item.nama || "-"
-        );
-
-      const jumlah =
-        Number(
-          item.jumlah || 0
-        );
-
-      const subtotal =
-        Number(
-          item.subtotal || 0
-        );
+    return items.map(item => {
+      const nama = escapeHTML(item.name || item.nama || "-");
+      const qty = Number(item.qty ?? item.jumlah ?? 0);
+      const subtotal = Number(
+        item.subtotal ??
+        ((item.price ?? item.harga ?? 0) * qty)
+      );
 
       return `
-        <div>
-          🛒 ${nama}
-          × ${jumlah}
-          = Rp${formatRupiah(subtotal)}
+        <div class="item-row">
+          🛒 ${nama} × ${qty}
+          ${subtotal ? ` — Rp${formatRupiah(subtotal)}` : ""}
         </div>
       `;
-
     }).join("");
   }
 
-
-  // =========================
-  // UBAH STATUS PESANAN
-  // =========================
-
-  async function ubahStatus(
-    pengenal,
-    status
-  ) {
-
-    const {
-      error
-    } = await supabaseClient
-      .from("perintah")
-      .update({
-        status: status
-      })
-      .eq("pengenal", pengenal);
+  async function ubahStatus(id, status) {
+    const { error } = await supabaseClient
+      .from("orders")
+      .update({ status })
+      .eq("id", id);
 
     if (error) {
-
-      alert(
-        "Gagal mengubah status pesanan:\n" +
-        error.message
-      );
-
+      alert("Gagal mengubah status pesanan:\n" + error.message);
+      muatPesanan();
       return;
     }
 
     muatPesanan();
   }
 
-
-  // =========================
-  // UTILITAS
-  // =========================
-
   function formatRupiah(angka) {
-
-    return Number(angka || 0)
-      .toLocaleString("id-ID");
+    return Number(angka || 0).toLocaleString("id-ID");
   }
 
-
   function escapeHTML(teks) {
-
-    const div =
-      document.createElement("div");
-
-    div.textContent =
-      String(teks);
-
+    const div = document.createElement("div");
+    div.textContent = String(teks);
     return div.innerHTML;
   }
 
-
-  function escapeJS(teks) {
-
-    return String(teks)
-      .replace(/\\/g, "\\\\")
-      .replace(/'/g, "\\'");
-  }
-
-
-  // =========================
-  // AUTO CEK LOGIN
-  // =========================
-
-  supabaseClient.auth.onAuthStateChange(
-    (event, session) => {
-
-      if (session) {
-        tampilkanAdmin();
-      }
-
+  supabaseClient.auth.onAuthStateChange((event, session) => {
+    if (session) {
+      setTimeout(() => tampilkanAdmin(), 0);
     }
-  );
+  });
 
-
-  // MULAI
   cekLogin();
-
 </script>
-
 </body>
 </html>
