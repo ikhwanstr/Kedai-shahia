@@ -60,11 +60,24 @@ button{
 small{color:#666}
 
 .order-item{
-  display:flex;
-  justify-content:space-between;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:start;
   gap:12px;
-  padding:8px 0;
+  padding:10px 0;
   border-bottom:1px solid #eee;
+  font-size:15px;
+  line-height:1.4;
+}
+
+.order-item span{
+  min-width:0;
+  overflow-wrap:anywhere;
+}
+
+.order-item b{
+  white-space:nowrap;
+  text-align:right;
   font-size:15px;
 }
 
