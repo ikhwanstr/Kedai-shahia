@@ -416,13 +416,14 @@ function formatItems(items){
     const nama = escapeHtml(item.name || "-");
     const qty = Number(item.qty || 0);
     const subtotal = Number(item.subtotal || 0);
-
-    html += `
-      <div class="order-item">
-        <span>🍔 ${nama} × ${qty}</span>
-        <b>Rp ${subtotal.toLocaleString("id-ID")}</b>
-      </div>
-    `;
+html += `
+  <div class="order-item">
+    <span class="item-name">🍔 ${nama}</span>
+    <span class="item-qty">×${qty}</span>
+    <b class="item-price">Rp ${subtotal.toLocaleString("id-ID")}</b>
+  </div>
+`;
+    
 
   });
 
